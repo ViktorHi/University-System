@@ -1,0 +1,12 @@
+.menu .label
+{
+    -fx-text-fill: #F0F0F0;
+}
+
+.menu-item .label{
+    -fx-text-fill: black;
+}
+
+.table-column{
+	-fx-alignment: center;
+}
