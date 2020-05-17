@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import universitysystem.animations.Shake;
 import universitysystem.model.Const;
 import universitysystem.model.db.DatabaseHandler;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 
 public class MainController implements Controllable {
@@ -43,7 +43,19 @@ public class MainController implements Controllable {
 
     //region fields
     @FXML
+    private MenuItem overfulfilledMi;
+
+    @FXML
+    private MenuItem academicDegreeMi;
+
+    @FXML
     private Menu aboutMeBt;
+
+    @FXML
+    private MenuItem aboutUserMi;
+
+    @FXML
+    private MenuItem aboutProfessorMi;
 
     @FXML
     private ComboBox<Integer> addYearCB;
@@ -108,6 +120,7 @@ public class MainController implements Controllable {
     void initialize() {
         //setCurrentUser(User.getUserByLogin("kash"));
 
+        //region listeners initialize
         addYearCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) return;
             currentPlan = (currentPlans.get(newValue));
@@ -140,6 +153,78 @@ public class MainController implements Controllable {
             currentProfessor = newValue;
             updateAll();
         });
+
+        overfulfilledMi.setOnAction(event -> {
+            if (currentUser.getUserStatus() == UserStatus.admin) {
+                Stage stage = (Stage) addNewYearBt.getScene().getWindow();
+                NavigationController.openNewDependScene(
+                        stage,
+                        Const.VIEW_FACT_MORE_PLAN_LOCATION,
+                        stage.getX() + 100,
+                        stage.getY() + 100,
+                        currentUser,
+                        this,
+                        true
+                );
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Для продолжения необходимо авторизоваться в качестве администратора");
+                alert.showAndWait();
+            }
+        });
+
+        academicDegreeMi.setOnAction(event -> {
+            if (currentUser.getUserStatus() == UserStatus.admin) {
+                Stage stage = (Stage) addNewYearBt.getScene().getWindow();
+                NavigationController.openNewDependScene(
+                        stage,
+                        Const.VIEW_ACADEMIC_FOR_DATE_LOCATION,
+                        stage.getX() + 100,
+                        stage.getY() + 100,
+                        currentUser,
+                        this,
+                        true
+                );
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Для продолжения необходимо авторизоваться в качестве администратора");
+                alert.showAndWait();
+            }
+        });
+
+        aboutUserMi.setOnAction(event -> {
+
+            Stage stage = (Stage) addNewYearBt.getScene().getWindow();
+            NavigationController.openNewDependScene(
+                    stage,
+                    Const.VIEW_USER_POLL_LOCATION,
+                    stage.getX() + 100,
+                    stage.getY() + 100,
+                    currentUser,
+                    this,
+                    true
+            );
+
+        });
+
+        aboutProfessorMi.setOnAction(event -> {
+            if (currentUser.getUserStatus() != UserStatus.admin) {
+                Stage stage = (Stage) addNewYearBt.getScene().getWindow();
+                NavigationController.openNewDependScene(
+                        stage,
+                        Const.VIEW_PROFESSOR_POLL_LOCATION,
+                        stage.getX() + 100,
+                        stage.getY() + 100,
+                        currentUser,
+                        this,
+                        true
+                );
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Для продолжения необходимо авторизоваться в качестве профессора");
+                alert.showAndWait();
+            }
+        });
+
+        //endregion
+
     }
 
     private void updatePlansTable() {
@@ -388,7 +473,7 @@ public class MainController implements Controllable {
 
     @Override
     public void updateParent() {
-
+        currentUser = User.getUserByLogin(currentUser.getUserLogin());
     }
 
     private void disableDividers(final SplitPane split) {

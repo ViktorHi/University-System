@@ -75,25 +75,33 @@ public class UserPollViewController implements Controllable {
             User user = prepareUserToApply();
             if(user != null){
                 User.updateUserByLogin(user);
-                if(mode == WorkMode.signUp){
-                    if(user.getUserStatus() != UserStatus.admin){
-                        NavigationController.openNewScene(
-                                applyBt,
-                                Const.VIEW_PROFESSOR_POLL_LOCATION,
-                                user,
-                                this,
-                                false
-                        );
-                    }else{
-                        NavigationController.openNewScene(
-                                applyBt,
-                                Const.VIEW_MAIN_LOCATION,
-                                user,
-                                this,
-                                false
-                        );
-                    }
 
+                switch (mode){
+                    case signUp:
+
+                        if(user.getUserStatus() != UserStatus.admin){
+                            NavigationController.openNewScene(
+                                    applyBt,
+                                    Const.VIEW_PROFESSOR_POLL_LOCATION,
+                                    user,
+                                    this,
+                                    false
+                            );
+                        }else{
+                            NavigationController.openNewScene(
+                                    applyBt,
+                                    Const.VIEW_MAIN_LOCATION,
+                                    user,
+                                    this,
+                                    false
+                            );
+                        }
+                        break;
+                    case update:
+                        parent.updateParent();
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Обновление прошло успешно");
+                        alert.showAndWait();
+                        break;
                 }
             }
         });

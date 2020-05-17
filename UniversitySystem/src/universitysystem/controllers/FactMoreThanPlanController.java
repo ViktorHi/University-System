@@ -22,15 +22,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import universitysystem.model.Const;
 import universitysystem.model.db.DatabaseHandler;
-import universitysystem.model.structs.CustomTableLine;
-import universitysystem.model.structs.PeriodStruct;
-import universitysystem.model.structs.Professor;
-import universitysystem.model.structs.User;
+import universitysystem.model.structs.*;
 
-public class FactMoreThanPlanController {
+public class FactMoreThanPlanController implements Controllable{
 
 
     //region fields
+
+    User currentUser;
+
     @FXML
     private ResourceBundle resources;
 
@@ -108,12 +108,9 @@ public class FactMoreThanPlanController {
         planTC.setSortable(false);
         addValueFactoryToColumn();
         List<CustomTableLine> data = getData();
-        for (int i = 0; i < 20; i++) {
-            data.add(data.get(0));
-        }
+
         ObservableList<CustomTableLine> tableLines = FXCollections.observableArrayList(data);
         tableTV.setItems(tableLines);
-        System.out.println();
     }
 
     private void addValueFactoryToColumn(){
@@ -240,6 +237,23 @@ public class FactMoreThanPlanController {
         }
 
         return null;
+    }
+
+    @Override
+    public void setCurrentUser(User user) {
+        currentUser = user;
+        if(user == null) return;
+
+    }
+
+    @Override
+    public void setControllable(Controllable controllable) {
+
+    }
+
+    @Override
+    public void updateParent() {
+
     }
 }
 
