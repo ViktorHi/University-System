@@ -3,10 +3,7 @@ package universitysystem.model.structs;
 import universitysystem.model.Const;
 import universitysystem.model.db.DatabaseHandler;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -291,6 +288,19 @@ public class Professor {
         PeriodStruct.delFromDbByProfId(Const.ACADEMIC_DEGREE_TABLE, idProfessor);
         PeriodStruct.delFromDbByProfId(DEGREE_TABLE, idProfessor);
         PeriodStruct.delFromDbByProfId(POST_TABLE, idProfessor);
+    }
+
+    public static List<Professor> getAllProfessorsByAcaDegreeForDate(BaseStruct academicDegree, Date date){
+        List<Professor> ans = null;
+        List<PeriodStruct> structs = PeriodStruct.getStructsByBaseStructLater(academicDegree, ACADEMIC_DEGREE_TABLE, date);
+        if (structs != null){
+            for (PeriodStruct elem : structs) {
+                if(ans == null) ans = new ArrayList<>();
+                ans.add(getProfessorById(elem.getIdProfessor()));
+            }
+        }
+
+        return ans;
     }
 
     //region get set

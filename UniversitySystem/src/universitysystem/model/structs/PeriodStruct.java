@@ -36,7 +36,7 @@ public class PeriodStruct implements Comparable{
 
     }
 
-    static PeriodStruct getPeriodStructFromDbById(int id, String table) {
+    static public PeriodStruct getPeriodStructFromDbById(int id, String table) {
         DatabaseHandler handler = new DatabaseHandler();
         PeriodStruct ans = null;
 
@@ -68,7 +68,7 @@ public class PeriodStruct implements Comparable{
         return ans;
     }
 
-    static List<PeriodStruct> getPeriodStructs(String table) {
+    static public List<PeriodStruct> getPeriodStructs(String table) {
         DatabaseHandler handler = new DatabaseHandler();
         List<PeriodStruct> ans = null;
 
@@ -91,7 +91,33 @@ public class PeriodStruct implements Comparable{
         return ans;
     }
 
-    static List<PeriodStruct> getStructsByProfessorId(int idProfessor, String table) {
+    static public List<PeriodStruct> getStructsByBaseStructLater(BaseStruct baseStruct, String table, Date beginDate){
+        List<PeriodStruct> ans = null;
+        DatabaseHandler handler = new DatabaseHandler();
+        try {
+            Connection dbConnection = handler.getDbConnection();
+
+            String query = "SELECT * FROM " + table + " WHERE " + Const.PERIOD_STRUCT_ID_1 + table + 
+                    Const.PERIOD_STRUCT_BASE_ID_3 + " = " + baseStruct.id + " AND " + 
+                    Const.PERIOD_STRUCT_START_DATE + " > " + "?";
+
+            PreparedStatement prSt = dbConnection.prepareStatement(query);
+            prSt.setDate(1 , beginDate);
+
+            ResultSet resultSet = prSt.executeQuery();
+
+            ans = getPeriodStructList(resultSet, table);
+            
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return ans;
+    }
+    
+    static public List<PeriodStruct> getStructsByProfessorId(int idProfessor, String table) {
         DatabaseHandler handler = new DatabaseHandler();
         List<PeriodStruct> ans = null;
 
@@ -192,6 +218,7 @@ public class PeriodStruct implements Comparable{
         return true;
     }
 
+    //region get set
     public BaseStruct getStruct() {
         return struct;
     }
@@ -212,6 +239,8 @@ public class PeriodStruct implements Comparable{
         return idProfessor;
     }
 
+    //endregion 
+    
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
