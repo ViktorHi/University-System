@@ -30,12 +30,8 @@
         <menus>
           <Menu mnemonicParsing="false" style="-fx-text-fill: #f0f0f0;" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+                  <MenuItem fx:id="overfulfilledMi" mnemonicParsing="false" text="Перевыполнившие план" />
+              <MenuItem fx:id="academicDegreeMi" mnemonicParsing="false" text="Ученая степень" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -49,7 +45,8 @@
         <menus>
           <Menu fx:id="aboutMeBt" mnemonicParsing="false" text="About me">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
+              <MenuItem fx:id="aboutUserMi" mnemonicParsing="false" text="О пользователе" />
+                  <MenuItem fx:id="aboutProfessorMi" mnemonicParsing="false" text="О преподавателе" />
             </items>
           </Menu>
         </menus>
