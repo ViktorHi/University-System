@@ -6,15 +6,17 @@ package universitysystem.controllers;
 
 
 import java.util.ResourceBundle;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import universitysystem.model.Const;
 import universitysystem.model.structs.User;
 import universitysystem.model.structs.UserStatus;
 
-public class SignUpController {
+public class SignUpController implements Controllable {
 
     // group for radio buttons
-    ToggleGroup group =new ToggleGroup();
+    ToggleGroup group = new ToggleGroup();
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -50,7 +52,8 @@ public class SignUpController {
     @FXML
     private Label infoLabel;
 
-    @FXML // This method is called by the FXMLLoader when initialization is complete
+    @FXML
+        // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert loginTextField != null : "fx:id=\"loginTextField\" was not injected: check your FXML file 'signUp.fxml'.";
         assert passwordTextField != null : "fx:id=\"passwordTextField\" was not injected: check your FXML file 'signUp.fxml'.";
@@ -59,7 +62,7 @@ public class SignUpController {
         assert nameTextField != null : "fx:id=\"nameTextField\" was not injected: check your FXML file 'signUp.fxml'.";
         assert reapetPasswordTextField != null : "fx:id=\"reapetPasswordTextField\" was not injected: check your FXML file 'signUp.fxml'.";
 
-        group =new ToggleGroup();
+        group = new ToggleGroup();
         adminRadioButton.setToggleGroup(group);
         notAdminRadioButton.setToggleGroup(group);
 
@@ -76,20 +79,25 @@ public class SignUpController {
             User user = new User(firstName, lastName, login, pass, status);
 
 
-            if(!login.equals("") && !lastName.equals("") && !firstName.equals("")&&
-            !pass.equals("") && !secondPass.equals("")){
-                if(pass.equals(secondPass)){
-                    if(User.getUserByLogin(user.getUserLogin()) == null){
+            if (!login.equals("") && !lastName.equals("") && !firstName.equals("") &&
+                    !pass.equals("") && !secondPass.equals("")) {
+                if (pass.equals(secondPass)) {
+                    if (User.getUserByLogin(user.getUserLogin()) == null) {
                         User.signUpUser(user);
                         infoLabel.setText("Регистрация успешна");
-                        NavigationController.openNewScene(adminRadioButton, UserPollViewController.location);
-                    }else{
+                        NavigationController.openNewScene(
+                                adminRadioButton,
+                                Const.VIEW_USER_POLL_LOCATION,
+                                user,
+                                this,
+                                false);
+                    } else {
                         infoLabel.setText("Пользователь с таким логином уже существует");
                     }
-                }else{
+                } else {
                     infoLabel.setText("Пароли должны совпадать");
                 }
-            }else{
+            } else {
                 infoLabel.setText("Поля не должны быть пустыми");
             }
 
@@ -97,10 +105,25 @@ public class SignUpController {
         });
     }
 
-    private UserStatus getSelectedMode(){
+    private UserStatus getSelectedMode() {
         RadioButton activeBt = (RadioButton) group.getSelectedToggle();
-        if(activeBt.getId().equals("adminRadioButton"))
+        if (activeBt.getId().equals("adminRadioButton"))
             return UserStatus.admin;
         return UserStatus.not_admin;
+    }
+
+    @Override
+    public void setCurrentUser(User user) {
+
+    }
+
+    @Override
+    public void setControllable(Controllable controllable) {
+
+    }
+
+    @Override
+    public void updateParent() {
+
     }
 }

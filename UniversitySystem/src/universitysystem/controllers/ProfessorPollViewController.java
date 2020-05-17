@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ProfessorPollViewController implements Controllable {
-    enum WorkMode {
+    private enum WorkMode {
         add,
         update,
         admin
@@ -122,16 +122,14 @@ public class ProfessorPollViewController implements Controllable {
     private WorkMode workMode;
 
 
-//endregion
+    //endregion
 
-    @FXML
-        // This method is called by the FXMLLoader when initialization is complete
+    @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
 
         group = new ToggleGroup();
         poohBahRB.setToggleGroup(group);
         staffMemberRB.setToggleGroup(group);
-        setCurrentUser(User.getUserByLogin("vik_log"));
 
         //region add new object listeners to BaseStruct
         newInstitutionBt.setOnAction(event -> {
@@ -159,9 +157,9 @@ public class ProfessorPollViewController implements Controllable {
         });
         //endregion
 
-        //region add  new object listeners to add Bt
+        //region add new object listeners to add Bt
         addUniBt.setOnAction(event -> {
-            BaseStruct res = DateDialog.createDialogBase("Пожалйста для университета", Const.UNIVERSITY_NAMES_TABLE);
+            BaseStruct res = DateDialog.createDialogBase("Пожалйста заполните структуру для университета", Const.UNIVERSITY_NAMES_TABLE);
             if(res != null){
                 professorToUpdate.setUniversity(new University(res));
                 updateSpiners();
@@ -171,7 +169,7 @@ public class ProfessorPollViewController implements Controllable {
 
         addFucBt.setOnAction(event -> {
 
-            BaseStruct res = DateDialog.createDialogBase("Пожалйста для факультет", Const.FACULTY_NAMES_TABLE);
+            BaseStruct res = DateDialog.createDialogBase("Пожалйста заполните структуру для факультета", Const.FACULTY_NAMES_TABLE);
             if(res != null){
                 professorToUpdate.setFaculty(new Faculty(res));
                 updateSpiners();
@@ -179,7 +177,7 @@ public class ProfessorPollViewController implements Controllable {
         });
 
         addPulBt.setOnAction(event -> {
-            BaseStruct res = DateDialog.createDialogBase("Пожалйста для кафедра", Const.PULPIT_NAMES_TABLE);
+            BaseStruct res = DateDialog.createDialogBase("Пожалйста заполните структуру для кафедры", Const.PULPIT_NAMES_TABLE);
             if(res != null){
                 professorToUpdate.setPulpit(new Pulpit(res));
                 updateSpiners();
@@ -188,7 +186,7 @@ public class ProfessorPollViewController implements Controllable {
 
         addDegBt.setOnAction(event -> {
 
-            PeriodStruct res = DateDialog.createDialogPeriod("Пожалйста для Ученой звание", Const.DEGREE_NAMES_TABLE);
+            PeriodStruct res = DateDialog.createDialogPeriod("Пожалйста заполните структуру для ученого звания", Const.DEGREE_NAMES_TABLE);
             if(res != null){
                 List<PeriodStruct> degrees = (List<PeriodStruct>) professorToUpdate.getDegrees();
                 degrees.add(res);
@@ -202,7 +200,7 @@ public class ProfessorPollViewController implements Controllable {
 
         addAcaBt.setOnAction(event -> {
 
-            PeriodStruct res = DateDialog.createDialogPeriod("Пожалйста для Ученой степень", Const.ACADEMIC_DEGREE_NAMES_TABLE);
+            PeriodStruct res = DateDialog.createDialogPeriod("Пожалйста заполните структуру для ученой степени", Const.ACADEMIC_DEGREE_NAMES_TABLE);
             if(res != null){
                 List<PeriodStruct> degrees = (List<PeriodStruct>) professorToUpdate.getAcademicDegrees();
                 degrees.add(res);
@@ -212,7 +210,7 @@ public class ProfessorPollViewController implements Controllable {
         });
 
         addPosBt.setOnAction(event -> {
-            PostStruct res = DateDialog.createDialogForPost("Пожалйста для должности", Const.POST_NAMES_TABLE);
+            PostStruct res = DateDialog.createDialogForPost("Пожалйста заполните структуру для должности", Const.POST_NAMES_TABLE);
             if( res != null){
                 List<PeriodStruct> degrees = (List<PeriodStruct>) professorToUpdate.getPosts();
                 degrees.add(res);
@@ -263,6 +261,15 @@ public class ProfessorPollViewController implements Controllable {
                     if (prepareToApply()) {
 
                         Professor.addProfessorToDb(professorToUpdate);
+
+                        NavigationController.openNewScene(
+                                addAcaBt,
+                                Const.VIEW_MAIN_LOCATION,
+                                currentUser,
+                                this,
+                                true
+                                );
+
                     } else {
                         return;
                     }
@@ -272,7 +279,6 @@ public class ProfessorPollViewController implements Controllable {
             }
         });
 
-        System.out.println("after init");
     }
 
     private void openAddNewBaseStructView(String location) {
@@ -283,7 +289,8 @@ public class ProfessorPollViewController implements Controllable {
                 stage.getX() + 100,
                 stage.getY() + 100,
                 currentUser,
-                this
+                this,
+                false
         );
     }
 
@@ -349,7 +356,7 @@ public class ProfessorPollViewController implements Controllable {
             infoLabel.setText("Поле факультета должно быть заполнено");
             return false;
         }
-        if (professorToUpdate.getPosts() == null) {
+        if (professorToUpdate.getPosts().size() == 0) {
             infoLabel.setText("Поле должности должно быть заполнено");
             return false;
         }
@@ -357,11 +364,11 @@ public class ProfessorPollViewController implements Controllable {
             infoLabel.setText("Поле кафедры должно быть заполнено");
             return false;
         }
-        if (professorToUpdate.getDegrees() == null) {
+        if (professorToUpdate.getDegrees().size() == 0) {
             infoLabel.setText("Поле ученое звание должно быть заполнено");
             return false;
         }
-        if (professorToUpdate.getAcademicDegrees() == null) {
+        if (professorToUpdate.getAcademicDegrees().size() == 0) {
             infoLabel.setText("Поле ученая степень должно быть заполнено");
             return false;
         }
@@ -374,11 +381,13 @@ public class ProfessorPollViewController implements Controllable {
         if (currentUser != null) {
 
             userLoginLb.setText(currentUser.getUserLogin());
+
             if (currentUser.getUserStatus() != UserStatus.admin) {
                 //not_admin
 
                 professorChoiceB.setVisible(false);
                 Professor professor = Professor.getProfessorByLogin(currentUser.getUserLogin());
+
                 if (professor == null) {
                     workMode = WorkMode.add;
                     professorToUpdate = new Professor();
@@ -386,7 +395,6 @@ public class ProfessorPollViewController implements Controllable {
                     professorToUpdate.setPosts(new ArrayList<>());
                     professorToUpdate.setAcademicDegrees(new ArrayList<>());
                     professorToUpdate.setDegrees(new ArrayList<>());
-
                 } else {
                     workMode = WorkMode.update;
                     professorToUpdate = professor;

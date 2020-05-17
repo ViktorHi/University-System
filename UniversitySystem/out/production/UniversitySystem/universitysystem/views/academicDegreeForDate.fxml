@@ -69,8 +69,6 @@
                   <TableColumn fx:id="academicDegreeTC" prefWidth="120.0" text="уч. Степень" />
                   <TableColumn fx:id="degreeTC" prefWidth="120.0" text="уч. Звание" />
                   <TableColumn fx:id="postTC" prefWidth="100.0" text="Должность" />
-                  <TableColumn fx:id="yearTC" prefWidth="50.0" text="Год" />
-                  <TableColumn fx:id="semestrTC" prefWidth="75.0" text="Семестр" />
               </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

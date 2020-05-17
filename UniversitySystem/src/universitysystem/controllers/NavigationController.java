@@ -21,7 +21,7 @@ public class NavigationController{
 
 
 
-    static void openNewScene(Node node, String window){
+    static public void openNewSceneWithoutUser(Node node, String window){
         node.getScene().getWindow().hide();
 
         FXMLLoader loader = new FXMLLoader();
@@ -38,10 +38,43 @@ public class NavigationController{
         stage.setTitle(SYSTEM_TITLE);
         stage.setResizable(false);
         stage.getIcons().add(new Image(IMAGE_URL));
-        stage.showAndWait();
+        stage.show();
     }
 
-    static void openNewDependScene(Stage primaryStage, String window, double xPos, double yPos, User user, Controllable self){
+    static public void openNewScene(Node node, String window, User user, Controllable self, boolean isResizable){
+        node.getScene().getWindow().hide();
+
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(NavigationController.class.getResource(window));
+
+        try {
+            loader.load();
+        } catch (IOException e) {
+        }
+
+        Controllable ctr = loader.getController();
+        ctr.setCurrentUser(user);
+        ctr.setControllable(self);
+
+        Parent root = loader.getRoot();
+        Scene secondScene = new Scene(root);
+
+        // New window (Stage)
+        Stage newWindow = new Stage();
+        newWindow.setScene(secondScene);
+
+        // Specifies the modality for new window.
+        newWindow.initModality(Modality.WINDOW_MODAL);
+
+        newWindow.setTitle(SYSTEM_TITLE);
+        newWindow.setResizable(isResizable);
+        newWindow.getIcons().add(new Image(IMAGE_URL));
+
+        newWindow.show();
+    }
+
+    static public void openNewDependScene(Stage primaryStage, String window, double xPos, double yPos,
+                                          User user, Controllable self, boolean isResizable){
 
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(NavigationController.class.getResource(window));
@@ -70,7 +103,7 @@ public class NavigationController{
         newWindow.setX(xPos);
         newWindow.setY(yPos);
         newWindow.setTitle(SYSTEM_TITLE);
-        newWindow.setResizable(false);
+        newWindow.setResizable(isResizable);
         newWindow.getIcons().add(new Image(IMAGE_URL));
 
         newWindow.show();

@@ -12,7 +12,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
        // Parent root = FXMLLoader.load(getClass().getResource("/universitysystem/views/pollView.fxml"));
-        Parent root = FXMLLoader.load(getClass().getResource("/universitysystem/views/academicDegreeForDate.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/universitysystem/views/login.fxml"));
         primaryStage.setTitle("University System");
         Scene scene = new Scene(root, 900, 600);
 

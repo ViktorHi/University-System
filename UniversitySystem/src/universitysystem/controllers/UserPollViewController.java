@@ -10,15 +10,21 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import universitysystem.model.Const;
 import universitysystem.model.structs.*;
 
 public class UserPollViewController implements Controllable {
 
-    private User currentUser;
-    private Controllable parent;
-
+    private enum WorkMode{
+        update, signUp
+    }
 
     //region fields
+
+    private User currentUser;
+    private Controllable parent;
+    WorkMode mode = null;
+
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
 
@@ -64,23 +70,34 @@ public class UserPollViewController implements Controllable {
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
-        currentUser = new User("logintest", "1234", "userlogin", "pass", UserStatus.admin);
-        setCurrentUser(User.getUserByLogin("vik_log"));
-
-        //BirthdayTB.setValue(LocalDate.now());
-
 
         applyBt.setOnAction(event -> {
             User user = prepareUserToApply();
             if(user != null){
                 User.updateUserByLogin(user);
+                if(mode == WorkMode.signUp){
+                    if(user.getUserStatus() != UserStatus.admin){
+                        NavigationController.openNewScene(
+                                applyBt,
+                                Const.VIEW_PROFESSOR_POLL_LOCATION,
+                                user,
+                                this,
+                                false
+                        );
+                    }else{
+                        NavigationController.openNewScene(
+                                applyBt,
+                                Const.VIEW_MAIN_LOCATION,
+                                user,
+                                this,
+                                false
+                        );
+                    }
+
+                }
             }
         });
-        System.out.println("after init");
-
-
     }
-
 
     private User prepareUserToApply(){
         infoLabel.setText("");
@@ -92,7 +109,10 @@ public class UserPollViewController implements Controllable {
         String pass= passPF.getText().trim();
         String passAgain= passRpPF.getText().trim();
         LocalDate birthday = BirthdayTB.getValue();
-        Date date = Date.valueOf(birthday);
+
+        if(birthday == null) {
+            return null;
+        }
 
         boolean isValid=true;
         if(name.equals("")) {
@@ -120,10 +140,11 @@ public class UserPollViewController implements Controllable {
         }
 
         if(isValid){
+            Date date = Date.valueOf(birthday);
             return new User(name, lastName, middleName,currentUser.getUserLogin(),
                     pass,
                     telephone, address, currentUser.getUserStatus(),
-                    date);
+                    date, currentUser.getId());
         }
         else {
             return null;
@@ -134,15 +155,22 @@ public class UserPollViewController implements Controllable {
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
         if(currentUser!= null){
+
             userLoginLb.setText(currentUser.getUserLogin());
             nameTB.setText(currentUser.getUserFirstName());
             lastNameTB.setText(currentUser.getUserLastName());
             middleNameTB.setText(currentUser.getUserMiddleName());
+
+            mode = WorkMode.signUp;
             if(currentUser.getBirthDate() != null){
                 BirthdayTB.setValue(currentUser.getBirthDate().toLocalDate());
+                mode = WorkMode.update;
             }
+
             telephoneTB.setText(currentUser.getTelephone());
             addressTB.setText(currentUser.getLocation());
+
+            this.currentUser = User.getUserByLogin(currentUser.getUserLogin());
         }
     }
 

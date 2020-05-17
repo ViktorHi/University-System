@@ -59,4 +59,14 @@ public class Const {
 
     public static final String IMAGE_URL = "/universitysystem/assets/images/icon.png";
     public static final String SYSTEM_TITLE = "University System";
+
+    //region views locations
+    public static final String VIEW_MAIN_LOCATION = "/universitysystem/views/mainView.fxml";
+    public static final String VIEW_REGISTRATION_LOCATION = "/universitysystem/views/signUp.fxml";
+    public static final String VIEW_LOGIN_LOCATION = "/universitysystem/views/login.fxml";
+    public static final String VIEW_USER_POLL_LOCATION = "/universitysystem/views/UserPollView.fxml";
+    public static final String VIEW_PROFESSOR_POLL_LOCATION = "/universitysystem/views/ProfessorPollView.fxml";
+    public static final String VIEW_ACADEMIC_FOR_DATE_LOCATION = "/universitysystem/views/academicDegreeForDate.fxml";
+    public static final String VIEW_FACT_MORE_PLAN_LOCATION = "/universitysystem/views/factMoreThanPlanView.fxml";
+    //endregion
 }

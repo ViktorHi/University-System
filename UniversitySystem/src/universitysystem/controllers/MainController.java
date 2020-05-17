@@ -102,12 +102,11 @@ public class MainController implements Controllable {
     private Plan currentPlan;
     private Map<Integer, Plan> currentPlans = new HashMap<>();
 
-//endregion
+    //endregion
 
     @FXML
     void initialize() {
-        setWorkTypesValue();
-        setCurrentUser(User.getUserByLogin("vik_log"));
+        //setCurrentUser(User.getUserByLogin("kash"));
 
         addYearCB.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) return;
@@ -117,6 +116,7 @@ public class MainController implements Controllable {
         });
 
         workNameList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) return;
             currentWorkType = WorkType.valueOf(newValue.english);
             updateAll();
         });
@@ -136,6 +136,7 @@ public class MainController implements Controllable {
         });
 
         professorList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) return;
             currentProfessor = newValue;
             updateAll();
         });
@@ -366,16 +367,16 @@ public class MainController implements Controllable {
         if (currentUser == null)
             return;
 
+        setProfessorsValue();
+        setWorkTypesValue();
+
         if (currentUser.getUserStatus() == UserStatus.admin) {
 //            setProfessorValues()
         } else {
             currentProfessor = Professor.getProfessorByLogin(user.getUserLogin());
             workAndProfSP.setDividerPositions(1.0);
             disableDividers(workAndProfSP);
-            setProfessorsValue();
-            setWorkTypesValue();
             updateAll();
-
         }
 
     }

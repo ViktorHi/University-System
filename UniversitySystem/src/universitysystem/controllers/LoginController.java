@@ -6,14 +6,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import universitysystem.animations.Shake;
+import universitysystem.model.Const;
 import universitysystem.model.structs.User;
 import universitysystem.model.db.DatabaseHandler;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-
-public class LoginController {
+public class LoginController implements Controllable{
 
     @FXML
     private TextField loginTextField;
@@ -46,7 +44,7 @@ public class LoginController {
         });
 
         loginSignUpButton.setOnAction(event -> {
-            NavigationController.openNewScene(authSignInButton, SignUpController.location);
+            NavigationController.openNewSceneWithoutUser(authSignInButton, SignUpController.location);
         });
     }
 
@@ -55,18 +53,37 @@ public class LoginController {
         User user = new User(login, pass);
         User res = User.getUserByLoginAndPass(user);
 
-        if(res != null){
+        if (res != null) {
             infoLabel.setText("Авторизация пройдена успешно");
-            //todo transition to next Scene
-//                NavigationController.openNewScene();
-        }
-        else{
+            NavigationController.openNewScene(
+                    loginTextField,
+                    Const.VIEW_MAIN_LOCATION,
+                    res,
+                    this,
+                    true);
+        } else {
             Shake shake = new Shake(passwordTextField);
             Shake shake2 = new Shake(loginTextField);
             shake.play();
             shake2.play();
             infoLabel.setText("Логин или пароль неверный");
-        };
+        }
+        ;
+
+    }
+
+    @Override
+    public void setCurrentUser(User user) {
+
+    }
+
+    @Override
+    public void setControllable(Controllable controllable) {
+
+    }
+
+    @Override
+    public void updateParent() {
 
     }
 }
